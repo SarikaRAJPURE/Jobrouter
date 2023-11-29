@@ -3,17 +3,31 @@ import User from "../models/userModel.js";
 import Job from "../models/jobModel.js";
 
 export const getCurrentUser = async (req, res) => {
+  const user = await User.findOne({
+    _id: req.user.userId,
+  });
+  const userWithoutPassword = user.toJSON();
   res
     .status(StatusCodes.OK)
-    .json({ msg: "get current user" });
+    .json({ user: userWithoutPassword });
 };
 
 export const getApplicationStats = async (req, res) => {
-  res
-    .status(StatusCodes.OK)
-    .json({ msg: "get application status" });
+  const users = await User.countDocuments();
+  const jobs = await Job.countDocuments();
+
+  res.status(StatusCodes.OK).json({ users, jobs });
+  //.json({ msg: "get application status" });
 };
 
 export const updateUser = async (req, res) => {
+  //to remove password from req.body
+  const obj = { ...req.body };
+  delete obj.password;
+  console.log(obj);
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user.userId,
+    obj
+  );
   res.status(StatusCodes.OK).json({ msg: "update user" });
 };

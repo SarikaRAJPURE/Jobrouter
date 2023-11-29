@@ -1,4 +1,7 @@
-import { UnauthenticatedError } from "../errors/customErrors.js";
+import {
+  UnauthenticatedError,
+  UnauthorizedError,
+} from "../errors/customErrors.js";
 import { verifyJWT } from "../utils/tokenUtils.js";
 
 //authenticate user
@@ -21,4 +24,19 @@ export const authenticateUser = (req, res, next) => {
       "authentication invalid"
     );
   }
+};
+
+//give permission to only admin to access application stats
+
+export const authorizePermissions = (...roles) => {
+  return (req, res, next) => {
+    console.log(roles);
+    //check wether req.user.role is in the user array
+    if (!roles.includes(req.user.role)) {
+      throw new UnauthorizedError(
+        "Unauthorize to access this route"
+      );
+    }
+    next();
+  };
 };
