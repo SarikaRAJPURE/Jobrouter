@@ -24,7 +24,7 @@ export const register = async (req, res) => {
     .json({ msg: "user created" });
 };
 
-//login
+//login user
 export const login = async (req, res) => {
   const user = await User.findOne({
     email: req.body.email,
@@ -52,7 +52,7 @@ export const login = async (req, res) => {
   res.cookie("token", token, {
     httpOnly: true, //cannot be accessed with JS in browser
     expires: new Date(Date.now() + oneDay), //in ms
-    secure: process.env.NODE_ENV==='production',//cookie can be only transmitted over https but while we are developing its http 
+    secure: process.env.NODE_ENV === "production", //cookie can be only transmitted over https but while we are developing its http
     //so to fix that set secure property to true when we are in prod env.if not m still will be able to access it using http
   });
 
@@ -61,4 +61,16 @@ export const login = async (req, res) => {
     .json({ msg: "user logged in" });
   //res.json({ token });
   //res.send("login route");
+};
+
+//logout user
+export const logout = (req, res) => {
+  //remove cookie
+  res.cookie("token", "logout", {
+    httpOnly: true, //cannot be accessed with JS in browser
+    expires: new Date(Date.now()), //expires immediately
+  });
+  res
+    .status(StatusCodes.OK)
+    .json({ msg: "user logged out!" });
 };

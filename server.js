@@ -4,23 +4,28 @@ import morgan from "morgan";
 import * as dotenv from "dotenv";
 dotenv.config();
 import mongoose from "mongoose";
+import cookieParser from "cookie-parser";
 
 //router
 import jobRouter from "./routes/jobRouter.js";
 import authRouter from "./routes/authRouter.js";
+import userRouter from "./routes/userRouter.js";
 
 //middleware
 import errorHandlerMiddleware from "./middleware/errorHandlerMiddleware.js";
+import { authenticateUser } from "./middleware/authMiddleware.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.use(cookieParser());
 app.use(express.json());
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
-app.use("/api/v1/jobs", jobRouter);
+app.use("/api/v1/jobs", authenticateUser, jobRouter);
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/users",authenticateUser, userRouter);
 
 //If none of the rotes match
 //NOT FOUND MIDDLEWARE

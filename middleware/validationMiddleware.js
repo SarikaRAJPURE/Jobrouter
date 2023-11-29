@@ -6,6 +6,7 @@ import {
 import {
   BadRequestError,
   NotFoundError,
+  UnauthorizedError,
 } from "../errors/customErrors.js";
 import {
   JOB_STATUS,
@@ -26,6 +27,11 @@ const withValidationErrors = (validateValues) => {
           .map((error) => error.msg);
         if (errorMessages[0].startsWith("no job")) {
           throw new NotFoundError(errorMessages);
+        }
+        if (errorMessages[0].startsWith("not authorized")) {
+          throw new UnauthorizedError(
+            "not authorized to access this route"
+          );
         }
         throw new BadRequestError(errorMessages);
       }
@@ -53,13 +59,22 @@ export const validateJobInput = withValidationErrors([
 ]);
 
 export const validateIdParam = withValidationErrors([
-  param("id").custom(async (value) => {
+  param("id").custom(async (value, { req }) => {
     const isValidId =
       mongoose.Types.ObjectId.isValid(value);
     if (!isValidId) throw new Error("invalid MongoDB id");
     const job = await Job.findById(value);
     if (!job)
       throw new NotFoundError(`no job with id ${value}`);
+    //console.log(req);
+    //console.log(job);
+    const isAdmin = req.user.role === "admin";
+    const isOwner =
+      req.user.userId === job.createdBy.toString();
+    if (!isAdmin && !isOwner)
+      throw new UnauthorizedError(
+        "not authorized to access this route"
+      );
   }),
   //.withMessage("invalid MongoDB id"),
 ]);
