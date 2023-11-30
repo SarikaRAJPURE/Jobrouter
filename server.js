@@ -18,6 +18,10 @@ import { authenticateUser } from "./middleware/authMiddleware.js";
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.get("/api/v1/test", (req, res) => {
+  res.json({ msg: "test route" });
+});
+
 app.use(cookieParser());
 app.use(express.json());
 if (process.env.NODE_ENV === "development") {
@@ -25,7 +29,7 @@ if (process.env.NODE_ENV === "development") {
 }
 app.use("/api/v1/jobs", authenticateUser, jobRouter);
 app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/users",authenticateUser, userRouter);
+app.use("/api/v1/users", authenticateUser, userRouter);
 
 //If none of the rotes match
 //NOT FOUND MIDDLEWARE
