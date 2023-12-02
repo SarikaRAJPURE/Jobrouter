@@ -1,18 +1,34 @@
 import React, { useState, createContext, useContext } from 'react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, redirect, useLoaderData, useNavigate } from 'react-router-dom'
 import Wrapper from '../assets/wrappers/Dashboard'
 import { SmallSidebar, BigSidebar, Navbar } from "../components"
 import { checkDefaultTheme } from '../App'
+import customFetch from '../utils/customFetch'
+import { toast } from 'react-toastify'
+
+//to load user data before page renders
+export const loader = async () => {
+    try {
+        const { data } = await customFetch.get("/users/current-user");
+        console.log(data);
+        return data;
+    } catch (error) {
+        return redirect("/");
+    }
+}
 
 const DashBoardContext = createContext();
 
 const DashBoardLayout = () => {
-    console.log(checkDefaultTheme());
+    //const  data  = useLoaderData();
+    const { user } = useLoaderData();
+    const navigate = useNavigate();
+    console.log(user);
+    //console.log(checkDefaultTheme());
     //temp
-    const user = { name: 'john' };
     const [showSidebar, setShowSidebar] = useState(false);
     const [isDarkTheme, setIsDarkTheme] = useState(checkDefaultTheme());
-    console.log("isDarkTheme: " + isDarkTheme);
+    //console.log("isDarkTheme: " + isDarkTheme);
     const toggleDarkTheme = () => {
         const newDarkTheme = !isDarkTheme;
         setIsDarkTheme(newDarkTheme);
@@ -26,8 +42,10 @@ const DashBoardLayout = () => {
     }
 
     const logoutUser = async () => {
-        console.log('logout user');
-    }
+        navigate("/");
+        await customFetch.get("/auth/logout");
+        toast.success("Logging out...");
+    };
     return (
         <DashBoardContext.Provider value={{
             user,
@@ -44,7 +62,8 @@ const DashBoardLayout = () => {
                     <div>
                         <Navbar />
                         <div className="dashboard-page">
-                            <Outlet />
+                            {/* pass user object to all components inside outlet */}
+                            <Outlet context={{ user }} />
                         </div>
                     </div>
                 </main>
