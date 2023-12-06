@@ -91,6 +91,11 @@ npm install @tanstack/react-query@4.29.5 @tanstack/react-query-devtools@4.29.6 a
 [React Router](https://reactrouter.com/en/main)
 
 - version 6.4 brought significant changes (loader and action)
+- loaders allow us to preload the data
+- each route can define a "loader" function to provide data to route element before it renders.
+  -must return a value
+- actions allow us to handle the form submissions
+- must return a value
 - pages as independent entities
 - less need for global state
 - more pages
@@ -6025,14 +6030,12 @@ export const getAllJobs = async (req, res) => {
   const totalJobs = await Job.countDocuments(queryObject);
   const numOfPages = Math.ceil(totalJobs / limit);
 
-  res
-    .status(StatusCodes.OK)
-    .json({
-      totalJobs,
-      numOfPages,
-      currentPage: page,
-      jobs,
-    });
+  res.status(StatusCodes.OK).json({
+    totalJobs,
+    numOfPages,
+    currentPage: page,
+    jobs,
+  });
 };
 ```
 
