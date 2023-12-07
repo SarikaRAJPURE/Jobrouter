@@ -5,6 +5,12 @@ import * as dotenv from "dotenv";
 dotenv.config();
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
+import cloudinary from "cloudinary";
+
+//public
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+import path from "path";
 
 //router
 import jobRouter from "./routes/jobRouter.js";
@@ -17,16 +23,25 @@ import { authenticateUser } from "./middleware/authMiddleware.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-app.get("/api/v1/test", (req, res) => {
-  res.json({ msg: "test route" });
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET,
 });
+
 
 app.use(cookieParser());
 app.use(express.json());
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
+//for profile images in public folder to make assets publicly available
+
+app.use(
+  express.static(path.resolve(__dirname, "./public"))
+);
 app.use("/api/v1/jobs", authenticateUser, jobRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", authenticateUser, userRouter);
@@ -39,6 +54,10 @@ app.use("*", (req, res) => {
 //error handling middleware
 //ERROR MIDDLEWARE
 app.use(errorHandlerMiddleware);
+
+app.get("/api/v1/test", (req, res) => {
+  res.json({ msg: "test route" });
+});
 
 try {
   await mongoose.connect(process.env.MONGO_URL);

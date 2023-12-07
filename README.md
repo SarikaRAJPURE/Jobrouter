@@ -5332,6 +5332,9 @@ In this case, upload is an instance of the Multer middleware that was created ea
 
 When this middleware is used in an HTTP route handler, it will process the incoming request and extract the file attached to the 'avatar' field. Multer will then save the file according to the specified storage configuration, which includes the destination directory and filename logic defined earlier. The uploaded file can be accessed in the route handler using req.file.
 
+  * multer gets all inside form data and converts it into req.body
+
+
 #### Cloudinary - Create Account/Get API Keys
 
 [Cloudinary](https://cloudinary.com/)

@@ -1,6 +1,8 @@
 import { StatusCodes } from "http-status-codes";
 import User from "../models/userModel.js";
 import Job from "../models/jobModel.js";
+import cloudinary from "cloudinary";
+import { promises as fs } from "fs";
 
 export const getCurrentUser = async (req, res) => {
   const user = await User.findOne({
@@ -21,13 +23,37 @@ export const getApplicationStats = async (req, res) => {
 };
 
 export const updateUser = async (req, res) => {
+  console.log(req.file);
+
   //to remove password from req.body
-  const obj = { ...req.body };
-  delete obj.password;
-  console.log(obj);
+  const newUser = { ...req.body };
+  delete newUser.password;
+  //console.log(newUser);
+
+  //access image file
+  //multer gets all inside form data and converts it into req.body
+
+  if (req.file) {
+    const response = await cloudinary.v2.uploader.upload(
+      req.file.path
+    );
+    //before we save file in db remove that file from public folder
+    await fs.unlink(req.file.path);
+    newUser.avatar = response.secure_url;
+    newUser.avatarPublicId = response.public_id;
+  }
+
   const updatedUser = await User.findByIdAndUpdate(
     req.user.userId,
-    obj
+    newUser
   );
+
+  //if user updates image check if old img exists on cloudinary then remove it
+
+  if (req.file && updatedUser.avatarPublicId) {
+    await cloudinary.v2.uploader.destroy(
+      updatedUser.avatarPublicId
+    );
+  }
   res.status(StatusCodes.OK).json({ msg: "update user" });
 };

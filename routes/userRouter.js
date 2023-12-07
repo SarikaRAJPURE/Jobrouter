@@ -6,16 +6,22 @@ import {
   updateUser,
 } from "../controllers/userController.js";
 import { validateUpdateUserInput } from "../middleware/validationMiddleware.js";
-import { authenticateUser, authorizePermissions } from "../middleware/authMiddleware.js";
+import {
+  authenticateUser,
+  authorizePermissions,
+} from "../middleware/authMiddleware.js";
+//upload image
+import upload from "../middleware/multerMiddleware.js";
 
 router.get("/current-user", getCurrentUser);
 router.get(
   "/admin/app-stats",
-  [authorizePermissions("admin"),authenticateUser],
+  [authorizePermissions("admin"), authenticateUser],
   getApplicationStats
 );
 router.patch(
   "/update-user",
+  upload.single("avatar"), //to upload image
   validateUpdateUserInput,
   updateUser
 );

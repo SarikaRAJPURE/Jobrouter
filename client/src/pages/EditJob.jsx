@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormRow, FormRowSelect } from "../components";
+import { FormRow, FormRowSelect, SubmitBtn } from "../components";
 import Wrapper from "../assets/wrappers/DashboardFormPage";
 import { useLoaderData, useParams } from "react-router-dom";
 import {
@@ -8,7 +8,6 @@ import {
 } from "../../../utils/constants";
 import {
     Form,
-    useNavigation,
     redirect,
 } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -44,8 +43,7 @@ const EditJob = () => {
      console.log(params); */
     const { job } = useLoaderData();
     //console.log(job);
-    const navigation = useNavigation();
-    const isSubmitting = navigation.state === 'submitting'
+
     return (
         <Wrapper>
             <Form method='post' className='form'>
@@ -68,12 +66,7 @@ const EditJob = () => {
                         defaultValue={job.jobType}
                         list={Object.values(JOB_TYPE)}
                     />
-                    <button
-                        className='btn btn-block form-btn'
-                        type='submit' disabled={isSubmitting}>
-                        {isSubmitting ? 'submitting...' : 'submit'}
-                    </button>
-                </div>
+                    <SubmitBtn formBtn />                </div>
             </Form>
         </Wrapper>
     )
