@@ -9,6 +9,7 @@ import { validateUpdateUserInput } from "../middleware/validationMiddleware.js";
 import {
   authenticateUser,
   authorizePermissions,
+  checkForTestUser,
 } from "../middleware/authMiddleware.js";
 //upload image
 import upload from "../middleware/multerMiddleware.js";
@@ -21,6 +22,7 @@ router.get(
 );
 router.patch(
   "/update-user",
+  checkForTestUser,
   upload.single("avatar"), //to upload image
   validateUpdateUserInput,
   updateUser

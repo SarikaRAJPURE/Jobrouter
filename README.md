@@ -5442,6 +5442,8 @@ export default SubmitBtn;
 
 - create test user
 - feel free to use one of the chatGPT options
+- useNavigate-to redirect in component and use redirect inside action and loader
+
 
 ```json
 {
