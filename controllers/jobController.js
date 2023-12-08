@@ -1,5 +1,7 @@
 import Job from "../models/jobModel.js";
 import { StatusCodes } from "http-status-codes";
+import mongoose from "mongoose";
+import day from "dayjs";
 
 //GET all jobs
 export const getAllJobs = async (req, res) => {
@@ -45,6 +47,65 @@ export const updateJob = async (req, res) => {
   res
     .status(StatusCodes.OK)
     .json({ msg: `job modified`, job: updatedJob });
+};
+
+//show stats
+
+export const showStats = async (req, res) => {
+  let stats = await Job.aggregate([
+    {
+      $match: {
+        createdBy: new mongoose.Types.ObjectId(
+          req.user.userId
+        ),
+      },
+    },
+    { $group: { _id: "$jobStatus", count: { $sum: 1 } } },
+  ]);
+  console.log(stats);
+  stats = stats.reduce((acc, curr) => {
+    const { _id: title, count } = curr;
+    acc[title] = count;
+    return acc;
+  }, {});
+  console.log(stats);
+
+  const defaultStats = {
+    pending: stats.pending || 0,
+    interview: stats.interview || 0,
+    declined: stats.declined || 0,
+  };
+  let monthlyApplications = [
+    {
+      date: "Jul 23",
+      count: 12,
+    },
+    {
+      date: "Aug 23",
+      count: 9,
+    },
+    {
+      date: "Sep 23",
+      count: 3,
+    },
+    {
+      date: "Oct 23",
+      count: 12,
+    },
+    {
+      date: "Nov 23",
+      count: 9,
+    },
+    {
+      date: "Dec 23",
+      count: 3,
+    },
+  ];
+
+  res
+    .status(StatusCodes.OK)
+    .json({ defaultStats, monthlyApplications });
+  //res.send("stats");
 };
 
 //delete job

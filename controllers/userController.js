@@ -39,10 +39,11 @@ export const updateUser = async (req, res) => {
     );
     //before we save file in db remove that file from public folder
     await fs.unlink(req.file.path);
-    newUser.avatar = response.secure_url;
-    newUser.avatarPublicId = response.public_id;
+    newUser.avatar = response.secure_url;//will use this to display image on frontend 
+    newUser.avatarPublicId = response.public_id;// will use this to remove old image file
   }
 
+  //updated user has old instance of user
   const updatedUser = await User.findByIdAndUpdate(
     req.user.userId,
     newUser
