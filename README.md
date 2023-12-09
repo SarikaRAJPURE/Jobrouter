@@ -5332,8 +5332,7 @@ In this case, upload is an instance of the Multer middleware that was created ea
 
 When this middleware is used in an HTTP route handler, it will process the incoming request and extract the file attached to the 'avatar' field. Multer will then save the file according to the specified storage configuration, which includes the destination directory and filename logic defined earlier. The uploaded file can be accessed in the route handler using req.file.
 
-  * multer gets all inside form data and converts it into req.body
-
+- multer gets all inside form data and converts it into req.body
 
 #### Cloudinary - Create Account/Get API Keys
 
@@ -5443,7 +5442,6 @@ export default SubmitBtn;
 - create test user
 - feel free to use one of the chatGPT options
 - useNavigate-to redirect in component and use redirect inside action and loader
-
 
 ```json
 {
@@ -6003,7 +6001,7 @@ export const getAllJobs = async (req, res) => {
   if (search) {
     // search for whatever is entered in search container ignoring case
     queryObject.$or = [
-      { position: { $regex: search, $options: "i" } },//ignore casing
+      { position: { $regex: search, $options: "i" } }, //ignore casing
       { company: { $regex: search, $options: "i" } },
     ];
   }
@@ -6027,13 +6025,15 @@ export const getAllJobs = async (req, res) => {
 
   // setup pagination
   const page = Number(req.query.page) || 1;
-  const limit = Number(req.query.limit) || 10;
-  const skip = (page - 1) * limit;
-
+  const limit = Number(req.query.limit) || 10; //limit - no of jobs per page
+  const skip = (page - 1) * limit; //skip no of jobs when heading to next page
+  //for e.g on first page if u r showing first 10 jobs ,on page2 skip those 10 and show next 10 jobs
   const jobs = await Job.find(queryObject)
     .sort(sortKey)
     .skip(skip)
     .limit(limit);
+
+  //get total no of jobs based on search criteria and display it on frontend.
 
   const totalJobs = await Job.countDocuments(queryObject);
   const numOfPages = Math.ceil(totalJobs / limit);
