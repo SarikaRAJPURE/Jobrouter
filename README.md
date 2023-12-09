@@ -6001,11 +6001,14 @@ export const getAllJobs = async (req, res) => {
   };
 
   if (search) {
+    // search for whatever is entered in search container ignoring case
     queryObject.$or = [
-      { position: { $regex: search, $options: "i" } },
+      { position: { $regex: search, $options: "i" } },//ignore casing
       { company: { $regex: search, $options: "i" } },
     ];
   }
+
+  //if job status and type exists and they are not equal to all then only add them to query object
   if (jobStatus && jobStatus !== "all") {
     queryObject.jobStatus = jobStatus;
   }
