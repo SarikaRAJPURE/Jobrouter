@@ -6069,12 +6069,12 @@ const SearchContainer = () => {
         <h5 className="form-title">search form</h5>
         <div className="form-center">
           {/* search position */}
-
           <FormRow
             type="search"
             name="search"
             defaultValue="a"
           />
+          //add "all" to list
           <FormRowSelect
             labelText="job status"
             name="jobStatus"
@@ -6100,6 +6100,7 @@ const SearchContainer = () => {
             Reset Search Values
           </Link>
           {/* TEMP!!!! */}
+            {/* so by default, if there is no method post on the form in the HTML actually browser makes the get request back to the same URL and provides input values as query string parameters */}
           <SubmitBtn formBtn />
         </div>
       </Form>

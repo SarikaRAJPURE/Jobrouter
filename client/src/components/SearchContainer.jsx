@@ -11,9 +11,25 @@ import { useAllJobsContext } from "../pages/AllJobs";
 
 const SearchContainer = () => {
     return (
-        <h2>
-            SearchContainer
-        </h2>
+        <Wrapper>
+            <Form className='form'>
+                <h5 className="form-title">Search Form</h5>
+                <div className="form-center">
+                    <FormRow type="text" name="search" defaultValue="a" />
+                    <FormRowSelect name="jobStatus" labelText="job status" list={["all", ...Object.values(JOB_STATUS)]} defaultValue="all" />
+                    <FormRowSelect name="jobType" labelText="job type" list={["all", ...Object.values(JOB_TYPE)]} defaultValue="all" />
+                    <FormRowSelect name="sort" list={[...Object.values(JOB_SORT_BY)]} defaultValue="newest" />
+                    <Link
+                        to="/dashboard/all-jobs"
+                        className="btn form-btn delete-btn"
+                    >
+                        Reset Search Values
+                    </Link>
+                    {/* TEMP!!!! */}
+                    <SubmitBtn formBtn />
+                </div>
+            </Form>
+        </Wrapper>
     )
 }
 
