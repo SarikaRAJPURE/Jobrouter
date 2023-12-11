@@ -8,9 +8,17 @@ import { useLoaderData } from "react-router-dom";
 import { useContext, createContext } from "react";
 
 export const loader = async ({ request }) => {
-    console.log("hello");
+    // console.log("hello");
+    //console.log(request.url);
+    //console.log(new URL(request.url).search);
+    //console.log(new URL(request.url).searchParams.entries());
+
     try {
-        const { data } = await customFetch.get("/jobs");
+        const params = Object.fromEntries([
+            ...new URL(request.url).searchParams.entries(),
+        ]);
+        console.log(params);
+        const { data } = await customFetch.get("/jobs", { params });
         //console.log({ data });
         return { data };
     } catch (error) {

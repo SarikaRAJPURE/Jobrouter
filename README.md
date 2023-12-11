@@ -6127,6 +6127,8 @@ import { useContext, createContext } from "react";
 const AllJobsContext = createContext();
 export const loader = async ({ request }) => {
   try {
+    //use new URL constructor to gather all query params and convert them into object:converts query params into object
+
     const params = Object.fromEntries([
       ...new URL(request.url).searchParams.entries(),
     ]);
