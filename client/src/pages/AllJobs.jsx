@@ -12,15 +12,16 @@ export const loader = async ({ request }) => {
     //console.log(request.url);
     //console.log(new URL(request.url).search);
     //console.log(new URL(request.url).searchParams.entries());
-
+    const params = Object.fromEntries([
+        ...new URL(request.url).searchParams.entries(),
+    ]);
+    console.log(params);
     try {
-        const params = Object.fromEntries([
-            ...new URL(request.url).searchParams.entries(),
-        ]);
-        console.log(params);
-        const { data } = await customFetch.get("/jobs", { params });
+        const { data } = await customFetch.get("/jobs", { params, });
         //console.log({ data });
-        return { data };
+        //pass params to the component and set them as default values
+
+        return { data, searchValues: { ...params } };
     } catch (error) {
         toast.error(error?.response?.data?.msg);
         return error;
@@ -28,10 +29,11 @@ export const loader = async ({ request }) => {
 };
 const AllJobsContext = createContext();
 const AllJobs = () => {
-    const { data } = useLoaderData();
+    const { data, searchValues } = useLoaderData();
     console.log(data);
+    console.log(searchValues);
     return (
-        <AllJobsContext.Provider value={data}>
+        <AllJobsContext.Provider value={{ data, searchValues }}>
             <SearchContainer />
             <JobsContainer />
         </AllJobsContext.Provider>
