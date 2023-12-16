@@ -31,7 +31,6 @@ cloudinary.config({
   api_secret: process.env.CLOUD_API_SECRET,
 });
 
-
 app.use(cookieParser());
 app.use(express.json());
 if (process.env.NODE_ENV === "development") {
@@ -45,6 +44,14 @@ app.use(
 app.use("/api/v1/jobs", authenticateUser, jobRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", authenticateUser, userRouter);
+
+//point to index.html in public folder
+
+app.get("*", (req, res) => {
+  res.sendFile(
+    path.resolve(__dirname, "./public", "index.html")
+  );
+});
 
 //If none of the rotes match
 //NOT FOUND MIDDLEWARE

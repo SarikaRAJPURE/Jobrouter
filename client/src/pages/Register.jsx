@@ -33,25 +33,20 @@ const Register = () => {
                 <h4>Register</h4>
                 <FormRow
                     type="text"
-                    name="name"
-                    defaultValue="john" />
+                    name="name" />
                 <FormRow
                     type="text"
                     name="lastName"
-                    labelText="last name"
-                    defaultValue="smith" />
+                    labelText="last name" />
                 <FormRow
                     type="text"
-                    name="location"
-                    defaultValue="earth" />
+                    name="location" />
                 <FormRow
                     type="email"
-                    name="email"
-                    defaultValue="john@gmail.com" />
+                    name="email" />
                 <FormRow
                     type="password"
-                    name="password"
-                    defaultValue="secret123" />
+                    name="password" />
                 <SubmitBtn />
                 <p>
                     Already a member?
